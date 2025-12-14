@@ -513,7 +513,7 @@ async def get_job_applications(
 @api_router.put("/applications/{application_id}/status")
 async def update_application_status(
     application_id: str,
-    status: str,
+    status_data: StatusUpdate,
     current_user: User = Depends(require_auth)
 ):
     """Update application status (employer only)"""
