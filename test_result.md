@@ -324,12 +324,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "نظام المصادقة - Backend & Frontend"
-    - "إدارة الوظائف - CRUD Operations"
-    - "نظام التقديم على الوظائف"
-    - "نظام المراسلة"
+    - "Frontend Testing - UI Components and Integration"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
