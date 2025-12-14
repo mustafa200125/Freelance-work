@@ -407,10 +407,13 @@ async def get_my_jobs(current_user: User = Depends(require_auth)):
     
     return [Job(**job) for job in jobs]
 
+class StatusUpdate(BaseModel):
+    status: str
+
 @api_router.put("/jobs/{job_id}/status")
 async def update_job_status(
     job_id: str,
-    status: str,
+    status_data: StatusUpdate,
     current_user: User = Depends(require_auth)
 ):
     """Update job status"""
