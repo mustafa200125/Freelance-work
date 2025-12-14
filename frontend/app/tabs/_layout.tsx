@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function TabsLayout() {
@@ -10,15 +11,24 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#4F46E5',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: '#1E3A8A',
+        tabBarInactiveTintColor: '#B45309',
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
-          height: 60,
-          paddingBottom: 8,
+          backgroundColor: '#FDE68A',
+          borderTopWidth: 3,
+          borderTopColor: '#D97706',
+          height: 70,
+          paddingBottom: 12,
           paddingTop: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
         },
         headerShown: false,
       }}
@@ -27,8 +37,11 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'الرئيسية',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ color, focused, size }) => (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              {focused && <View style={styles.iconDecor} />}
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -36,8 +49,11 @@ export default function TabsLayout() {
         name="jobs"
         options={{
           title: isEmployer ? 'وظائفي' : 'الوظائف',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="briefcase" size={size} color={color} />
+          tabBarIcon: ({ color, focused, size }) => (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              {focused && <View style={styles.iconDecor} />}
+              <Ionicons name={focused ? 'briefcase' : 'briefcase-outline'} size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -45,8 +61,11 @@ export default function TabsLayout() {
         name="messages"
         options={{
           title: 'الرسائل',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles" size={size} color={color} />
+          tabBarIcon: ({ color, focused, size }) => (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              {focused && <View style={styles.iconDecor} />}
+              <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} size={size} color={color} />
+            </View>
           ),
         }}
       />
@@ -54,11 +73,39 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: 'الحساب',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+          tabBarIcon: ({ color, focused, size }) => (
+            <View style={[styles.iconContainer, focused && styles.iconContainerActive]}>
+              {focused && <View style={styles.iconDecor} />}
+              <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />
+            </View>
           ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    width: 50,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    position: 'relative',
+  },
+  iconContainerActive: {
+    backgroundColor: '#FFFBEB',
+    borderWidth: 2,
+    borderColor: '#D97706',
+  },
+  iconDecor: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 8,
+    height: 8,
+    backgroundColor: '#1E3A8A',
+    borderRadius: 4,
+  },
+});

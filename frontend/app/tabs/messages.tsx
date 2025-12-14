@@ -67,15 +67,16 @@ export default function MessagesScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4F46E5" />
+        <ActivityIndicator size="large" color="#1E3A8A" />
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Header with Mesopotamian Pattern */}
       <View style={styles.header}>
+        <View style={styles.headerBorder} />
         <Text style={styles.headerTitle}>الرسائل</Text>
       </View>
 
@@ -83,13 +84,16 @@ export default function MessagesScreen() {
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1E3A8A" />
         }
       >
         {conversations.length === 0 ? (
           <View style={styles.emptyState}>
-            <Ionicons name="chatbubbles-outline" size={64} color="#D1D5DB" />
+            <View style={styles.emptyIconContainer}>
+              <Ionicons name="chatbubbles-outline" size={64} color="#D97706" />
+            </View>
             <Text style={styles.emptyText}>لا توجد رسائل بعد</Text>
+            <Text style={styles.emptySubtext}>ابدأ محادثة مع أصحاب العمل أو الباحثين</Text>
           </View>
         ) : (
           <View style={styles.conversationsList}>
@@ -101,6 +105,7 @@ export default function MessagesScreen() {
                   router.push(`/messages/${conv.user_id}?name=${conv.name}`)
                 }
               >
+                <View style={styles.cardBorder} />
                 <View style={styles.avatarContainer}>
                   {conv.picture ? (
                     <Image
@@ -109,7 +114,7 @@ export default function MessagesScreen() {
                     />
                   ) : (
                     <View style={styles.avatarPlaceholder}>
-                      <Ionicons name="person" size={24} color="#9CA3AF" />
+                      <Ionicons name="person" size={24} color="#D97706" />
                     </View>
                   )}
                   {conv.unread_count > 0 && (
@@ -117,6 +122,7 @@ export default function MessagesScreen() {
                       <Text style={styles.unreadText}>{conv.unread_count}</Text>
                     </View>
                   )}
+                  <View style={styles.avatarDecor} />
                 </View>
                 <View style={styles.conversationContent}>
                   <View style={styles.conversationHeader}>
@@ -129,6 +135,7 @@ export default function MessagesScreen() {
                     {conv.last_message}
                   </Text>
                 </View>
+                <View style={styles.cardCornerDecor} />
               </TouchableOpacity>
             ))}
           </View>
@@ -141,23 +148,27 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#FEF3C7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FEF3C7',
   },
   header: {
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#1E3A8A',
+    paddingBottom: 24,
+  },
+  headerBorder: {
+    height: 4,
+    backgroundColor: '#D97706',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#FFFFFF',
+    padding: 24,
   },
   scrollView: {
     flex: 1,
@@ -169,12 +180,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 64,
+    paddingVertical: 80,
+  },
+  emptyIconContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#FDE68A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 4,
+    borderColor: '#D97706',
+    marginBottom: 16,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#9CA3AF',
+    fontSize: 18,
+    color: '#1E3A8A',
     marginTop: 16,
+    fontWeight: 'bold',
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#92400E',
+    marginTop: 8,
+    textAlign: 'center',
+    paddingHorizontal: 32,
   },
   conversationCard: {
     flexDirection: 'row',
@@ -182,8 +212,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderWidth: 2,
+    borderColor: '#D97706',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  cardBorder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 4,
+    height: '100%',
+    backgroundColor: '#1E3A8A',
   },
   avatarContainer: {
     position: 'relative',
@@ -193,26 +233,43 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#D97706',
   },
   avatarPlaceholder: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FDE68A',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#D97706',
+  },
+  avatarDecor: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 16,
+    height: 16,
+    backgroundColor: '#1E3A8A',
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   unreadBadge: {
     position: 'absolute',
     top: -4,
     right: -4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#DC2626',
     borderRadius: 12,
     minWidth: 24,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 6,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   unreadText: {
     color: '#FFFFFF',
@@ -231,14 +288,24 @@ const styles = StyleSheet.create({
   conversationName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#1E3A8A',
   },
   conversationTime: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: '#92400E',
   },
   lastMessage: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#78350F',
+  },
+  cardCornerDecor: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 30,
+    height: 30,
+    backgroundColor: '#D97706',
+    opacity: 0.2,
+    transform: [{ rotate: '45deg' }],
   },
 });
