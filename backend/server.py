@@ -527,7 +527,7 @@ async def update_application_status(
     
     await db.applications.update_one(
         {"application_id": application_id},
-        {"$set": {"status": status}}
+        {"$set": {"status": status_data.status}}
     )
     
     return {"message": "Application status updated"}
