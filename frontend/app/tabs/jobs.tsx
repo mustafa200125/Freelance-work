@@ -70,36 +70,41 @@ export default function JobsScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4F46E5" />
+        <ActivityIndicator size="large" color="#1E3A8A" />
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Header with Mesopotamian Pattern */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {isEmployer ? 'ونظائفي' : 'الوظائف المتاحة'}
-        </Text>
-        {isEmployer && (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push('/jobs/post')}
-          >
-            <Ionicons name="add" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        )}
+        <View style={styles.headerBorder} />
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>
+            {isEmployer ? 'وظائفي' : 'الوظائف المتاحة'}
+          </Text>
+          {isEmployer && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => router.push('/jobs/post')}
+            >
+              <View style={styles.addButtonDecor} />
+              <Ionicons name="add" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Search & Filters */}
       {!isEmployer && (
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
-            <Ionicons name="search" size={20} color="#9CA3AF" />
+            <Ionicons name="search" size={20} color="#92400E" />
             <TextInput
               style={styles.searchInput}
               placeholder="ابحث عن وظيفة..."
+              placeholderTextColor="#B45309"
               value={search}
               onChangeText={setSearch}
               onSubmitEditing={handleSearch}
@@ -182,12 +187,12 @@ export default function JobsScreen() {
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1E3A8A" />
         }
       >
         {jobs.length === 0 ? (
           <View style={styles.emptyState}>
-            <Ionicons name="briefcase-outline" size={64} color="#D1D5DB" />
+            <Ionicons name="briefcase-outline" size={64} color="#D97706" />
             <Text style={styles.emptyText}>
               {isEmployer
                 ? 'لم تنشر أي وظائف بعد'
@@ -202,6 +207,8 @@ export default function JobsScreen() {
                 style={styles.jobCard}
                 onPress={() => router.push(`/jobs/${job.job_id}`)}
               >
+                <View style={styles.jobCardTopBorder} />
+                <View style={styles.jobCardLeftBorder} />
                 <View style={styles.jobHeader}>
                   <Text style={styles.jobTitle}>{job.title}</Text>
                   <View
@@ -223,7 +230,7 @@ export default function JobsScreen() {
                 </Text>
                 <View style={styles.jobFooter}>
                   <View style={styles.locationContainer}>
-                    <Ionicons name="location" size={16} color="#6B7280" />
+                    <Ionicons name="location" size={16} color="#92400E" />
                     <Text style={styles.locationText}>
                       {job.city}, {job.area}
                     </Text>
@@ -240,13 +247,14 @@ export default function JobsScreen() {
                 </View>
                 {job.salary_min && (
                   <View style={styles.salaryContainer}>
-                    <Ionicons name="cash" size={16} color="#10B981" />
+                    <Ionicons name="cash" size={16} color="#059669" />
                     <Text style={styles.salaryText}>
                       {job.salary_min} - {job.salary_max} (
                       {job.salary_type.join(', ')})
                     </Text>
                   </View>
                 )}
+                <View style={styles.jobCardBottomDecor} />
               </TouchableOpacity>
             ))}
           </View>
@@ -259,55 +267,74 @@ export default function JobsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#FEF3C7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FEF3C7',
   },
   header: {
+    backgroundColor: '#1E3A8A',
+  },
+  headerBorder: {
+    height: 4,
+    backgroundColor: '#D97706',
+  },
+  headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 24,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#4F46E5',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#D97706',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FDE68A',
+    position: 'relative',
+  },
+  addButtonDecor: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 12,
+    height: 12,
+    backgroundColor: '#FDE68A',
+    borderRadius: 6,
   },
   searchSection: {
     padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFBEB',
+    borderBottomWidth: 2,
+    borderBottomColor: '#D97706',
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 48,
     marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#D97706',
   },
   searchInput: {
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
-    color: '#111827',
+    color: '#1E3A8A',
   },
   filterScroll: {
     flexGrow: 0,
@@ -316,19 +343,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
     marginRight: 8,
+    borderWidth: 2,
+    borderColor: '#D97706',
   },
   filterChipActive: {
-    backgroundColor: '#4F46E5',
+    backgroundColor: '#1E3A8A',
+    borderColor: '#1E3A8A',
   },
   filterText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#92400E',
     fontWeight: '500',
   },
   filterTextActive: {
     color: '#FFFFFF',
+    fontWeight: '600',
   },
   scrollView: {
     flex: 1,
@@ -344,16 +375,35 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: '#92400E',
     marginTop: 16,
+    fontWeight: '600',
   },
   jobCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderWidth: 2,
+    borderColor: '#D97706',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  jobCardTopBorder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: '#1E3A8A',
+  },
+  jobCardLeftBorder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 4,
+    height: '100%',
+    backgroundColor: '#D97706',
   },
   jobHeader: {
     flexDirection: 'row',
@@ -364,19 +414,22 @@ const styles = StyleSheet.create({
   jobTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#1E3A8A',
     flex: 1,
   },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+    borderWidth: 1,
   },
   statusActive: {
     backgroundColor: '#D1FAE5',
+    borderColor: '#059669',
   },
   statusInactive: {
     backgroundColor: '#FEE2E2',
+    borderColor: '#DC2626',
   },
   statusText: {
     fontSize: 12,
@@ -385,12 +438,12 @@ const styles = StyleSheet.create({
   },
   companyName: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#92400E',
     marginBottom: 8,
   },
   jobDescription: {
     fontSize: 14,
-    color: '#4B5563',
+    color: '#78350F',
     marginBottom: 12,
   },
   jobFooter: {
@@ -406,17 +459,20 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 13,
-    color: '#6B7280',
+    color: '#92400E',
   },
   jobTypeBadge: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FDE68A',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#D97706',
   },
   jobTypeText: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#92400E',
+    fontWeight: '600',
   },
   salaryContainer: {
     flexDirection: 'row',
@@ -426,6 +482,14 @@ const styles = StyleSheet.create({
   salaryText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#10B981',
+    color: '#059669',
+  },
+  jobCardBottomDecor: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 50,
+    height: 4,
+    backgroundColor: '#D97706',
   },
 });
