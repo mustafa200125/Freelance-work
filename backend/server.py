@@ -427,7 +427,7 @@ async def update_job_status(
     
     await db.jobs.update_one(
         {"job_id": job_id},
-        {"$set": {"status": status, "updated_at": datetime.now(timezone.utc)}}
+        {"$set": {"status": status_data.status, "updated_at": datetime.now(timezone.utc)}}
     )
     
     return {"message": "Job status updated"}
