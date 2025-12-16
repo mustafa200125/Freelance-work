@@ -513,6 +513,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#D97706',
   },
+  publicCardIconBox: {
+    backgroundColor: '#EEF2FF',
+    borderColor: '#1E3A8A',
+  },
   logoutIconBox: {
     backgroundColor: '#FEE2E2',
     borderColor: '#DC2626',
