@@ -419,4 +419,42 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: '#D97706',
   },
+  feedBanner: {
+    marginHorizontal: 24,
+    marginBottom: 16,
+    backgroundColor: '#1E3A8A',
+    borderRadius: 16,
+    borderWidth: 3,
+    borderColor: '#D97706',
+    overflow: 'hidden',
+  },
+  feedBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    gap: 16,
+  },
+  feedIconContainer: {
+    width: 56,
+    height: 56,
+    backgroundColor: '#D97706',
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FDE68A',
+  },
+  feedTextContainer: {
+    flex: 1,
+  },
+  feedBannerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  feedBannerSubtitle: {
+    fontSize: 14,
+    color: '#FDE68A',
+  },
 });
