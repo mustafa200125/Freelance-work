@@ -41,6 +41,15 @@ export default function ProfileScreen() {
     );
   };
 
+  const copyPhoneNumber = (phoneNumber: string) => {
+    Clipboard.setString(phoneNumber);
+    Alert.alert(
+      '✓ تم النسخ',
+      `تم نسخ رقم الهاتف:\n${phoneNumber}`,
+      [{ text: 'حسناً' }]
+    );
+  };
+
   const isEmployer = user?.user_type === 'employer';
 
   return (
