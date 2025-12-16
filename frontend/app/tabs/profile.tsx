@@ -180,6 +180,23 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.menuItem}
+            onPress={() => router.push('/profile/public')}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconBox, styles.publicCardIconBox]}>
+                <Ionicons name="card" size={20} color="#1E3A8A" />
+              </View>
+              <Text style={styles.menuItemText}>
+                البطاقة العامة للنشر
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D97706" />
+          </TouchableOpacity>
+
+          <View style={styles.menuDivider} />
+
+          <TouchableOpacity
+            style={styles.menuItem}
             onPress={() =>
               router.push(
                 isEmployer
