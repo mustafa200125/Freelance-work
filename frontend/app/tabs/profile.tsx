@@ -105,12 +105,19 @@ export default function ProfileScreen() {
           </View>
           
           {user?.phone && (
-            <View style={styles.detailRow}>
+            <TouchableOpacity 
+              style={styles.detailRow}
+              onPress={() => copyPhoneNumber(user.phone!)}
+              activeOpacity={0.7}
+            >
               <View style={styles.iconBox}>
                 <Ionicons name="call" size={20} color="#D97706" />
               </View>
               <Text style={styles.detailText}>{user.phone}</Text>
-            </View>
+              <View style={styles.copyIcon}>
+                <Ionicons name="copy-outline" size={18} color="#1E3A8A" />
+              </View>
+            </TouchableOpacity>
           )}
 
           {user?.city && (
