@@ -675,7 +675,7 @@ async def get_user_reviews(user_id: str):
 @api_router.get("/reviews/stats/{user_id}")
 async def get_review_stats(user_id: str):
     """Get review statistics for a user"""
-    reviews = await db.reviews.find({"reviewed_id": user_id}, {"_id": 0}).to_list(1000)
+    reviews = await db.reviews.find({"reviewed_id": user_id}, {"_id": 0, "rating": 1}).to_list(1000)
     
     if not reviews:
         return {
