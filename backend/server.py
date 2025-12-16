@@ -489,12 +489,12 @@ async def get_my_applications(current_user: User = Depends(require_auth)):
     
     return [Application(**app) for app in apps]
 
-@api_router.get("/applications/job/{job_id}", response_model=List[Application])
+@api_router.get("/applications/job/{job_id}")
 async def get_job_applications(
     job_id: str,
     current_user: User = Depends(require_auth)
 ):
-    """Get all applications for a specific job (employer only)"""
+    """Get all applications for a specific job (employer only) with applicant details"""
     # Verify job ownership
     job = await db.jobs.find_one({"job_id": job_id}, {"_id": 0})
     if not job:
@@ -508,7 +508,20 @@ async def get_job_applications(
         {"_id": 0}
     ).sort("created_at", -1).to_list(200)
     
-    return [Application(**app) for app in apps]
+    # Enrich with applicant phone numbers
+    job_seeker_ids = list(set(app["job_seeker_id"] for app in apps))
+    users_cursor = db.users.find(
+        {"user_id": {"$in": job_seeker_ids}},
+        {"_id": 0, "user_id": 1, "phone": 1}
+    )
+    users_list = await users_cursor.to_list(length=None)
+    users_map = {user["user_id"]: user.get("phone") for user in users_list}
+    
+    # Add phone to each application
+    for app in apps:
+        app["job_seeker_phone"] = users_map.get(app["job_seeker_id"])
+    
+    return apps
 
 @api_router.put("/applications/{application_id}/status")
 async def update_application_status(
