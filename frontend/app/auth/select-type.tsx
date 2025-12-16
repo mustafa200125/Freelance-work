@@ -31,7 +31,7 @@ export default function SelectType() {
           </View>
         </View>
 
-        <Text style={styles.title}>مرحباً بك في منصة العمل</Text>
+        <Text style={styles.title}>مرحباً بك في أعمال حرة</Text>
         <Text style={styles.subtitle}>اختر نوع حسابك للمتابعة</Text>
 
         <View style={styles.optionsContainer}>
