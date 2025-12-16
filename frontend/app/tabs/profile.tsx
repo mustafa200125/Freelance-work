@@ -397,6 +397,16 @@ const styles = StyleSheet.create({
     color: '#78350F',
     flex: 1,
   },
+  copyIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FDE68A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#D97706',
+  },
   skillsContainer: {
     marginTop: 8,
   },
