@@ -613,10 +613,19 @@ async def get_conversations(current_user: User = Depends(require_auth)):
         if msg["receiver_id"] == current_user.user_id and not msg["read"]:
             conversations[partner_id]["unread_count"] += 1
     
-    # Get user details for each conversation
+    # Get user details for all conversation partners in one query (fix N+1 query)
+    partner_ids = list(conversations.keys())
+    users_cursor = db.users.find(
+        {"user_id": {"$in": partner_ids}},
+        {"_id": 0, "user_id": 1, "name": 1, "picture": 1}
+    )
+    users_list = await users_cursor.to_list(length=None)
+    users_map = {user["user_id"]: user for user in users_list}
+    
+    # Build result with user details
     result = []
     for partner_id, conv in conversations.items():
-        user = await db.users.find_one({"user_id": partner_id}, {"_id": 0, "name": 1, "picture": 1})
+        user = users_map.get(partner_id)
         if user:
             result.append({
                 **conv,
