@@ -144,6 +144,24 @@ class ReviewCreate(BaseModel):
     rating: int
     comment: Optional[str] = None
 
+class PublicPost(BaseModel):
+    post_id: str
+    user_id: str
+    user_name: str
+    user_type: str
+    picture: Optional[str] = None
+    profession: Optional[str] = None
+    phone: Optional[str] = None
+    email: str
+    city: Optional[str] = None
+    area: Optional[str] = None
+    skills: Optional[List[str]] = []
+    experience_years: Optional[int] = None
+    bio: Optional[str] = None
+    status: str = "active"  # "active", "inactive"
+    created_at: datetime
+    updated_at: datetime
+
 class SessionData(BaseModel):
     user_id: str
     email: str
