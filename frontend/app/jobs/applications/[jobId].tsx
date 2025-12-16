@@ -76,6 +76,15 @@ export default function JobApplicationsScreen() {
     router.push(`/messages/${userId}?name=${encodeURIComponent(name)}`);
   };
 
+  const copyText = (text: string, label: string) => {
+    Clipboard.setString(text);
+    Alert.alert(
+      '✓ تم النسخ',
+      `تم نسخ ${label}:\n${text}`,
+      [{ text: 'حسناً' }]
+    );
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'accepted':
