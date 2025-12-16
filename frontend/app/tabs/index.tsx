@@ -85,6 +85,23 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Public Feed Banner */}
+        <TouchableOpacity
+          style={styles.feedBanner}
+          onPress={() => router.push('/feed')}
+        >
+          <View style={styles.feedBannerContent}>
+            <View style={styles.feedIconContainer}>
+              <Ionicons name="globe" size={32} color="#FFFFFF" />
+            </View>
+            <View style={styles.feedTextContainer}>
+              <Text style={styles.feedBannerTitle}>النشر العام للمهن</Text>
+              <Text style={styles.feedBannerSubtitle}>ابحث عن محترفين وتواصل معهم مباشرة</Text>
+            </View>
+            <Ionicons name="arrow-forward" size={24} color="#D97706" />
+          </View>
+        </TouchableOpacity>
+
         {/* Quick Actions with Babylonian Style */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
