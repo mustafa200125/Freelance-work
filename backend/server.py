@@ -728,6 +728,122 @@ async def get_review_stats(user_id: str):
         "rating_distribution": distribution
     }
 
+# ============ Public Posts Endpoints ============
+
+@api_router.post("/posts/publish")
+async def publish_post(current_user: User = Depends(require_auth)):
+    """Publish user profile to public feed"""
+    post_id = f"post_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+    
+    # Check if user already has an active post
+    existing_post = await db.public_posts.find_one(
+        {"user_id": current_user.user_id, "status": "active"}
+    )
+    
+    if existing_post:
+        # Update existing post
+        await db.public_posts.update_one(
+            {"user_id": current_user.user_id},
+            {"$set": {"updated_at": now}}
+        )
+        return {"message": "Post updated", "post_id": existing_post["post_id"]}
+    
+    post_data = {
+        "post_id": post_id,
+        "user_id": current_user.user_id,
+        "user_name": current_user.name,
+        "user_type": current_user.user_type,
+        "picture": current_user.picture,
+        "profession": current_user.profession,
+        "phone": current_user.phone,
+        "email": current_user.email,
+        "city": current_user.city,
+        "area": current_user.area,
+        "skills": current_user.skills or [],
+        "experience_years": current_user.experience_years,
+        "bio": current_user.bio,
+        "status": "active",
+        "created_at": now,
+        "updated_at": now
+    }
+    
+    await db.public_posts.insert_one(post_data)
+    
+    return {"message": "Post published", "post_id": post_id}
+
+@api_router.delete("/posts/unpublish")
+async def unpublish_post(current_user: User = Depends(require_auth)):
+    """Remove user post from public feed"""
+    result = await db.public_posts.update_one(
+        {"user_id": current_user.user_id, "status": "active"},
+        {"$set": {"status": "inactive", "updated_at": datetime.now(timezone.utc)}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="No active post found")
+    
+    return {"message": "Post removed from public feed"}
+
+@api_router.get("/posts/public")
+async def get_public_posts(
+    profession: Optional[str] = None,
+    city: Optional[str] = None,
+    user_type: Optional[str] = None,
+    search: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 50
+):
+    """Get all public posts with filters"""
+    query: Dict[str, Any] = {"status": "active"}
+    
+    if profession:
+        query["profession"] = {"$regex": profession, "$options": "i"}
+    
+    if city:
+        query["city"] = {"$regex": city, "$options": "i"}
+    
+    if user_type:
+        query["user_type"] = user_type
+    
+    if search:
+        query["$or"] = [
+            {"user_name": {"$regex": search, "$options": "i"}},
+            {"profession": {"$regex": search, "$options": "i"}},
+            {"bio": {"$regex": search, "$options": "i"}},
+            {"skills": {"$regex": search, "$options": "i"}}
+        ]
+    
+    posts = await db.public_posts.find(
+        query,
+        {"_id": 0}
+    ).sort("updated_at", -1).skip(skip).limit(limit).to_list(limit)
+    
+    return posts
+
+@api_router.get("/posts/my-status")
+async def get_my_post_status(current_user: User = Depends(require_auth)):
+    """Check if current user has an active post"""
+    post = await db.public_posts.find_one(
+        {"user_id": current_user.user_id, "status": "active"},
+        {"_id": 0}
+    )
+    
+    return {
+        "is_published": post is not None,
+        "post": post if post else None
+    }
+
+@api_router.get("/posts/professions")
+async def get_all_professions():
+    """Get list of all unique professions"""
+    professions = await db.public_posts.distinct(
+        "profession",
+        {"status": "active", "profession": {"$ne": None, "$ne": ""}}
+    )
+    
+    return sorted(professions)
+
 # ============ Socket.IO Events ============
 
 @sio.event
