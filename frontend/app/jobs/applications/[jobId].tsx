@@ -146,9 +146,30 @@ export default function JobApplicationsScreen() {
                     <Text style={styles.applicantName}>
                       {app.job_seeker_name}
                     </Text>
-                    <Text style={styles.applicantEmail}>
-                      {app.job_seeker_email}
-                    </Text>
+                    <TouchableOpacity 
+                      style={styles.contactInfoRow}
+                      onPress={() => copyText(app.job_seeker_email, 'البريد الإلكتروني')}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="mail" size={16} color="#1E3A8A" />
+                      <Text style={styles.applicantEmail}>
+                        {app.job_seeker_email}
+                      </Text>
+                      <Ionicons name="copy-outline" size={14} color="#D97706" />
+                    </TouchableOpacity>
+                    {app.job_seeker_phone && (
+                      <TouchableOpacity 
+                        style={styles.contactInfoRow}
+                        onPress={() => copyText(app.job_seeker_phone, 'رقم الهاتف')}
+                        activeOpacity={0.7}
+                      >
+                        <Ionicons name="call" size={16} color="#1E3A8A" />
+                        <Text style={styles.applicantPhone}>
+                          {app.job_seeker_phone}
+                        </Text>
+                        <Ionicons name="copy-outline" size={14} color="#D97706" />
+                      </TouchableOpacity>
+                    )}
                   </View>
                   <View
                     style={[
