@@ -376,6 +376,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     gap: 12,
+    backgroundColor: '#FFFBEB',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
   },
   iconBox: {
     width: 40,
