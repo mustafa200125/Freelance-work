@@ -880,6 +880,136 @@ async def get_all_professions():
     
     return sorted(professions)
 
+# ============ Advertisement Endpoints ============
+
+@api_router.post("/ads", response_model=Advertisement)
+async def create_advertisement(
+    ad: AdvertisementCreate,
+    current_user: User = Depends(require_auth)
+):
+    """Create a new advertisement (admin only - for now any authenticated user)"""
+    ad_id = f"ad_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+    
+    ad_data = {
+        "ad_id": ad_id,
+        "created_by": current_user.user_id,
+        "status": "active",
+        "created_at": now,
+        "updated_at": now,
+        **ad.dict()
+    }
+    
+    await db.advertisements.insert_one(ad_data)
+    
+    return Advertisement(**ad_data)
+
+@api_router.get("/ads", response_model=List[Advertisement])
+async def get_advertisements(
+    location: Optional[str] = None,
+    status: str = "active",
+    skip: int = 0,
+    limit: int = 20
+):
+    """Get all advertisements with filters"""
+    query: Dict[str, Any] = {"status": status}
+    
+    # Check if ad is within date range
+    now = datetime.now(timezone.utc)
+    query["$or"] = [
+        {"start_date": None},
+        {"start_date": {"$lte": now}}
+    ]
+    query["$or"].append({
+        "$and": [
+            {"end_date": None},
+            {"$or": [{"start_date": None}, {"start_date": {"$lte": now}}]}
+        ]
+    })
+    query["$or"].append({
+        "$and": [
+            {"end_date": {"$gte": now}},
+            {"$or": [{"start_date": None}, {"start_date": {"$lte": now}}]}
+        ]
+    })
+    
+    if location and location != "all":
+        query["$and"] = [
+            {"$or": [{"location": location}, {"location": "all"}]}
+        ]
+    
+    ads = await db.advertisements.find(
+        {"status": status},
+        {"_id": 0}
+    ).sort("priority", -1).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    
+    return [Advertisement(**ad) for ad in ads]
+
+@api_router.get("/ads/my", response_model=List[Advertisement])
+async def get_my_advertisements(current_user: User = Depends(require_auth)):
+    """Get advertisements created by current user"""
+    ads = await db.advertisements.find(
+        {"created_by": current_user.user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return [Advertisement(**ad) for ad in ads]
+
+@api_router.get("/ads/{ad_id}", response_model=Advertisement)
+async def get_advertisement(ad_id: str):
+    """Get advertisement by ID"""
+    ad = await db.advertisements.find_one({"ad_id": ad_id}, {"_id": 0})
+    
+    if not ad:
+        raise HTTPException(status_code=404, detail="Advertisement not found")
+    
+    return Advertisement(**ad)
+
+@api_router.put("/ads/{ad_id}", response_model=Advertisement)
+async def update_advertisement(
+    ad_id: str,
+    ad_update: AdvertisementUpdate,
+    current_user: User = Depends(require_auth)
+):
+    """Update advertisement"""
+    ad = await db.advertisements.find_one({"ad_id": ad_id}, {"_id": 0})
+    
+    if not ad:
+        raise HTTPException(status_code=404, detail="Advertisement not found")
+    
+    if ad["created_by"] != current_user.user_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    update_data = ad_update.dict(exclude_none=True)
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.advertisements.update_one(
+        {"ad_id": ad_id},
+        {"$set": update_data}
+    )
+    
+    updated_ad = await db.advertisements.find_one({"ad_id": ad_id}, {"_id": 0})
+    
+    return Advertisement(**updated_ad)
+
+@api_router.delete("/ads/{ad_id}")
+async def delete_advertisement(
+    ad_id: str,
+    current_user: User = Depends(require_auth)
+):
+    """Delete advertisement"""
+    ad = await db.advertisements.find_one({"ad_id": ad_id}, {"_id": 0})
+    
+    if not ad:
+        raise HTTPException(status_code=404, detail="Advertisement not found")
+    
+    if ad["created_by"] != current_user.user_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    await db.advertisements.delete_one({"ad_id": ad_id})
+    
+    return {"message": "Advertisement deleted"}
+
 # ============ Socket.IO Events ============
 
 @sio.event
