@@ -162,6 +162,42 @@ class PublicPost(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+class Advertisement(BaseModel):
+    ad_id: str
+    title: str
+    description: Optional[str] = None
+    image_base64: str  # Base64 encoded image
+    link_url: Optional[str] = None
+    location: str  # "home", "feed", "jobs", "all"
+    priority: int = 0  # Higher number = higher priority
+    status: str = "active"  # "active", "inactive"
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    created_by: str
+    created_at: datetime
+    updated_at: datetime
+
+class AdvertisementCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    image_base64: str
+    link_url: Optional[str] = None
+    location: str = "all"
+    priority: int = 0
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
+class AdvertisementUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    image_base64: Optional[str] = None
+    link_url: Optional[str] = None
+    location: Optional[str] = None
+    priority: Optional[int] = None
+    status: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
 class SessionData(BaseModel):
     user_id: str
     email: str
